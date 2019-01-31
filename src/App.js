@@ -60,9 +60,14 @@ class App extends Component {
 
   renderWeather() {
     // This method returns undefined or a JSX component
-    if (this.state.weatherData === null) {
+    if (this.state.weatherData === null ) {
       // If there is no data return undefined
-      return undefined
+      return null
+    }
+    else if(this.state.weatherData.cod === "404" || this.state.weatherData.cod === "400") {
+      return (
+        <p>Invalid Location</p>
+      )
     }
 
     /* 
@@ -70,7 +75,6 @@ class App extends Component {
     possible to get a JSON response for an invalid zip in which 
     case the step below fails. 
     */ 
-    console.log(this.state.weatherData)
     // Take the weather data apart to more easily populate the component
     const { main, description, icon } = this.state.weatherData.weather[0]
     const { temp, pressure, humidity, temp_min, temp_max } = this.state.weatherData.main 
