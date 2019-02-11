@@ -60,6 +60,15 @@ class App extends Component {
     })
   }
 
+  remap(val1, range1, range2) { 
+    const X = val1
+    const A = range1[0]
+    const B = range1[1]
+    const C = range2[0]
+    const D = range2[1]
+    return (X-A)/(B-A) * (D-C) + C
+  }
+
   renderWeather() {
     // This method returns undefined or a JSX component
     if (this.state.weatherData === null ) {
@@ -80,12 +89,18 @@ class App extends Component {
     // Take the weather data apart to more easily populate the component
     const { main, description, icon } = this.state.weatherData.weather[0]
     const { temp, pressure, humidity, temp_min, temp_max } = this.state.weatherData.main 
-    
+    const tempf = (temp-273.15) * (9/5) + 32 
+    const red = this.remap(tempf,[32,100],[0,255])
+    const blue = this.remap(tempf,[100,32],[0,255])
+    console.log(red, blue, tempf)
+    const styles={
+      background: `rgb(${red},${(red+blue)/2},${blue})`
+    }
     return (
-      <div>
-        {/* <div>Title: {main}</div> */}
+      <div className="contianer" style={styles}>
+        <div>Title: {main}</div>
         <div>Desc: {description}</div>
-        {/* <div>Icon: {icon}</div> */}
+        <div>Icon: {icon}</div>
         {this.state.tempRange? <div>Temp: {Math.floor((temp-273.15) * (9/5) + 32)}</div> : <div>Temp Min: {Math.floor((temp_min-273.15) * (9/5) + 32)} Max:{Math.floor((temp_max-273.15) * (9/5) + 32)}</div>}
         <div>Pressure: {pressure}</div>
         <div>Humidity: {humidity}</div>
@@ -115,7 +130,7 @@ class App extends Component {
             type="text" 
             pattern="(\d{5}([\-]\d{4})?)"
             placeholder="enter zip"
-            for="submit"
+            htmlFor="submit"
           />
 
           <button type="submit" className="submit">Submit</button>
