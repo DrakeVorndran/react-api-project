@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 import './App.css';
-
+import Selector from './Selector';
 /** 
  * This example illustrates a simple react project 
  * that works with an external API. 
@@ -27,6 +27,8 @@ class App extends Component {
     this.state = {
       inputValue: '',     // Used to hold value entered in the input field
       weatherData: null,  // Used to hold data loaded from the weather API
+      tempRange: true,
+
     }
   }
 
@@ -81,15 +83,18 @@ class App extends Component {
     
     return (
       <div>
-        <div>Title: {main}</div>
+        {/* <div>Title: {main}</div> */}
         <div>Desc: {description}</div>
-        <div>Icon: {icon}</div>
-        <div>Temp: {temp}</div>
+        {/* <div>Icon: {icon}</div> */}
+        {this.state.tempRange? <div>Temp: {Math.floor((temp-273.15) * (9/5) + 32)}</div> : <div>Temp Min: {Math.floor((temp_min-273.15) * (9/5) + 32)} Max:{Math.floor((temp_max-273.15) * (9/5) + 32)}</div>}
         <div>Pressure: {pressure}</div>
         <div>Humidity: {humidity}</div>
-        <div>Temp Min: {temp_min} Max:{temp_max}</div>
       </div>
     )
+  }
+
+  updateTemp() {
+    this.setState({tempRange: !this.state.tempRange})
   }
 
   render() {
@@ -110,15 +115,18 @@ class App extends Component {
             type="text" 
             pattern="(\d{5}([\-]\d{4})?)"
             placeholder="enter zip"
+            for="submit"
           />
 
-          <button type="submit">Submit</button>
+          <button type="submit" className="submit">Submit</button>
 
         </form>
-
+        <div>
+          <Selector text="Tempature as a Range" value={this.state.tempRange} onClick={e => this.updateTemp()} />
+        </div>
         {/** Conditionally render this component */}
-        {this.renderWeather()}
-
+        {
+          this.renderWeather()}
       </div>
     );
   }
